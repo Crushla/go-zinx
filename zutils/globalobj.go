@@ -15,9 +15,11 @@ type GlobalObj struct {
 	Port      int               `ini:"Port"`
 	Name      string            `ini:"Name"`
 	//Zinx
-	Version        string `ini:"Version"`
-	MaxConn        int    `ini:"MaxConn"`
-	MaxPackageSize uint32 `ini:"MaxPackageSize"`
+	Version           string `ini:"Version"`
+	MaxConn           int    `ini:"MaxConn"`
+	MaxPackageSize    uint32 `ini:"MaxPackageSize"`
+	WorkerPoolSize    uint32 `ini:"WorkerPoolSize"`
+	MaxWorkerTaskSize uint32 `ini:"MaxWorkerTaskSize"`
 }
 
 // GlobalObject 定义一个全局对外Globalobj
@@ -45,12 +47,14 @@ func (g *GlobalObj) Reload() {
 //初始化
 func init() {
 	GlobalObject = &GlobalObj{
-		Name:           "zinx",
-		Version:        "v1",
-		Port:           9090,
-		Host:           "127.0.0.1",
-		MaxConn:        1000,
-		MaxPackageSize: 4096,
+		Name:              "zinx",
+		Version:           "v1",
+		Port:              9090,
+		Host:              "127.0.0.1",
+		MaxConn:           1000,
+		MaxPackageSize:    4096,
+		WorkerPoolSize:    10,
+		MaxWorkerTaskSize: 5000,
 	}
 	//尝试配置文件中加载
 	GlobalObject.Reload()

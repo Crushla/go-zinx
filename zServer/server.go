@@ -17,27 +17,27 @@ type Server struct {
 	IP string
 	//服务器监听端口
 	Port int
-	//当前的Server添加一个router,Server注册的连接对应处理业务
-	Router zInterface.Router
+	//消息管理模块
+	MsgHandler *MsgHandler
 }
 
-func (server *Server) AddRouter(router zInterface.Router) {
-	logrus.Info("Add Router Success")
-	server.Router = router
+func (server *Server) AddRouter(msgID uint32, router zInterface.Router) {
+	server.MsgHandler.AddRouter(msgID, router)
 }
 
-func NewServer(name string) zInterface.Server {
+func NewServer() zInterface.Server {
 	return &Server{
-		Name:      zutils.GlobalObject.Name,
-		IPversion: "tcp4",
-		IP:        zutils.GlobalObject.Host,
-		Port:      zutils.GlobalObject.Port,
-		Router:    nil,
+		Name:       zutils.GlobalObject.Name,
+		IPversion:  "tcp4",
+		IP:         zutils.GlobalObject.Host,
+		Port:       zutils.GlobalObject.Port,
+		MsgHandler: NewMsgHandler(),
 	}
 }
 
 func (server *Server) Start() {
 	go func() {
+		server.MsgHandler.StartWorkerPool()
 		// 获取TCP的Addr
 		addr, err := net.ResolveTCPAddr(server.IPversion, fmt.Sprintf("%s:%d", server.IP, server.Port))
 		if err != nil {
@@ -62,7 +62,7 @@ func (server *Server) Start() {
 				logrus.Error("Accept err", err)
 				continue
 			}
-			dealConn := NewConnetion(conn, uid, server.Router)
+			dealConn := NewConnetion(conn, uid, server.MsgHandler)
 			uid++
 
 			go dealConn.Start()

@@ -15,8 +15,8 @@ type Connection interface {
 	GetConnID() uint32
 	// RemoteAddr 获取远程客户端的TCP状态 IP Port
 	RemoteAddr() net.Addr
-	// Send 发送数据，将数据发送给远程客户端
-	Send(data []byte) error
+	// SendMsg 发送数据，将数据发送给远程客户端
+	SendMsg(msgID uint32, data []byte) error
 }
 
 type HandleFunc func(conn *net.TCPConn, data []byte, cnt int) error

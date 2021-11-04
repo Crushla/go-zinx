@@ -8,5 +8,5 @@ type Server interface {
 	// Run 运行服务器
 	Run()
 	// AddRouter 路由功能
-	AddRouter(router Router)
+	AddRouter(msgID uint32, router Router)
 }
